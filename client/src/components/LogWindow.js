@@ -6,12 +6,12 @@ const LogWindowContainer = styled.div`
   color: #333;
   padding: 5px 20px;
   border-radius: 3px;
-  min-height: 30px;
+  min-height: 50px;
   max-height: 50vh;
   overflow: scroll;
   text-align: left;
   font-family: consolas;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   max-height: 350px;
   max-width: 500px;
   width: 100%;
@@ -28,9 +28,12 @@ const CalculationListItem = styled.li``;
 const LogWindow = ({ entries }) => {
   return (
     <LogWindowContainer>
-      {entries && entries.length > 0 && (
-        <CalculationList>
-          {entries
+      <CalculationList>
+        <CalculationListItem key={0}>{'>'}</CalculationListItem>
+        {entries &&
+          entries.length > 0 &&
+          // Could also sort by createdAt, but arrays are ordered
+          /* entries
             .sort((a, b) => {
               if (a.createdAt === b.createdAt) {
                 return 0;
@@ -40,11 +43,16 @@ const LogWindow = ({ entries }) => {
             })
             .map((entry) => (
               <CalculationListItem key={entry.createdAt}>
-                {entry.value} created at {entry.createdAt}
+                {entry.value}
               </CalculationListItem>
-            ))}
-        </CalculationList>
-      )}
+            )) */
+
+          entries.map((entry) => (
+            <CalculationListItem key={entry.createdAt}>
+              &gt; {entry.value}
+            </CalculationListItem>
+          ))}
+      </CalculationList>
     </LogWindowContainer>
   );
 };

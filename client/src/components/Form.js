@@ -16,6 +16,7 @@ const Button = styled.button`
   border: none;
   text-transform: uppercase;
   font-weight: bold;
+  font-size: 1rem;
   letter-spacing: 2px;
   background-color: lightcoral;
   margin-top: 10px;
@@ -32,6 +33,7 @@ const Input = styled.input`
   border-radius: 10px;
   border: none;
   font-family: consolas;
+  font-size: 1.2rem;
 `;
 
 const ErrorMessage = styled.p`
@@ -43,11 +45,12 @@ const Form = ({ websocket, errorMessage, setErrorMessage }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (websocket) {
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
       websocket.send(caluclation);
       setErrorMessage('');
     } else {
       console.log(`the websocket is not connected`);
+      setErrorMessage('Lost connection...try refreshing your browser');
     }
   };
 
@@ -59,8 +62,12 @@ const Form = ({ websocket, errorMessage, setErrorMessage }) => {
     <CalculationForm onSubmit={handleSubmit}>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <Label htmlFor="calculation">Enter Calculation</Label>
-      <Input name="calculation" onChange={handleChange} />
-      <Button type="submit">Submit</Button>
+      <Input
+        name="calculation"
+        placeholder="Ex. (2 + 4 / 3)"
+        onChange={handleChange}
+      />
+      <Button type="submit">Calculate ⚡</Button>
     </CalculationForm>
   );
 };

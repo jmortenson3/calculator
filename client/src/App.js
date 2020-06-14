@@ -13,9 +13,16 @@ function App() {
     const ws = new WebSocket(SERVER_URL);
     setWebSocket(ws);
 
+    ws.onerror = (e) => {
+      // should implement a retry here
+      setErrorMessage('Lost connection...try refreshing your browser');
+    };
+
     if (ws) {
+      console.log('yep');
       ws.onmessage = (event) => {
         if (event.data) {
+          console.log(event.data);
           const data = JSON.parse(event.data);
           if (data.error) {
             setErrorMessage(data.error);

@@ -28,7 +28,8 @@ test('"" should return null', () => {
 test('should calculate createdAt on append', () => {
   const origCalculation = { value: '1 + 2' };
   const calculatorService = new CalculatorService();
-  const calculations = calculatorService.appendCalculation(origCalculation);
+  calculatorService.addCalculation(origCalculation);
+  const calculations = calculatorService.getLatestCalculations(1);
   expect(calculations[0].createdAt).not.toBeFalsy();
 });
 
@@ -36,7 +37,7 @@ test('should return 10 calculations', () => {
   const calculatorService = new CalculatorService();
   for (let i = 0; i < 20; i++) {
     const origCalculation = { value: '1 + 2' };
-    calculatorService.appendCalculation(origCalculation);
+    calculatorService.addCalculation(origCalculation);
   }
   expect(calculatorService.getLatestCalculations(10).length).toBe(10);
 });
@@ -45,7 +46,7 @@ test('should return all calculations if less than 10', () => {
   const calculatorService = new CalculatorService();
   for (let i = 0; i < 5; i++) {
     const origCalculation = { value: '1 + 2' };
-    calculatorService.appendCalculation(origCalculation);
+    calculatorService.addCalculation(origCalculation);
   }
   expect(calculatorService.getLatestCalculations(10).length).toBe(5);
 });

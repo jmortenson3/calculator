@@ -8,16 +8,9 @@ export class CalculatorService {
   }
 
   getLatestCalculations(limit: number): ICalculation[] {
-    // Sort by createdAt _descending_
-    //  so the lastest can be sliced off the front
-    const sorted = this.calculations.sort((c1, c2) => {
-      if (c1.createdAt === c2.createdAt) {
-        return 0;
-      } else {
-        return c1.createdAt < c2.createdAt ? 1 : -1;
-      }
-    });
-    return sorted.slice(0, limit);
+    // could use Array.pop(), but just in case
+    this.calculations = this.calculations.slice(0, limit);
+    return this.calculations;
   }
 
   solve(calculationAsStrign: string): number {
@@ -38,11 +31,10 @@ export class CalculatorService {
     }
   }
 
-  appendCalculation(calculation: ICalculation): ICalculation[] {
+  addCalculation(calculation: ICalculation): void {
     calculation.createdAt = calculation.createdAt
       ? calculation.createdAt
       : Date.now();
-    this.calculations.push(calculation);
-    return this.calculations;
+    this.calculations.unshift(calculation);
   }
 }

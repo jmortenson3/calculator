@@ -16,26 +16,38 @@ webSocketServer.on('connection', (webSocket: WebSocket) => {
   }
 
   webSocket.on('message', (message: string) => {
-    const solution = calculationService.solve(message);
+    try {
+      const allowedCharacters = /^[\s\d()+\-*/.]*$/;
 
-    if (solution === null) {
-      const errorMessage = {
-        error: 'Invalid calculation: must be in the form of: 4 + 3',
-        createdAt: Date.now(),
-      };
+      if (!allowedCharacters.test(message)) {
+        throw new Error('Invalid calculation: must be in the form of: 4 + 3');
+      }
 
-      // let only this user know about the error
-      webSocket.send(JSON.stringify(errorMessage));
-    } else {
-      const calculations = calculationService.appendCalculation({
+      const solution = calculationService.solve(message);
+
+      if (solution === null) {
+        throw new Error('Invalid calculation: must be in the form of: 4 + 3');
+      }
+
+      calculationService.addCalculation({
         value: `${message} = ${solution}`,
       });
+
+      const calculations = calculationService.getLatestCalculations(10);
 
       webSocketServer.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(calculations));
         }
       });
+    } catch (err) {
+      const errorMessage = {
+        error: err.message,
+        createdAt: Date.now(),
+      };
+
+      // let only this user know about the error
+      webSocket.send(JSON.stringify(errorMessage));
     }
   });
 });
